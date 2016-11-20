@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="main.css" />
+</head>
+<body ng-app="app">
+
+    <div id="main-container" ng-controller="mainController">
+        test container
+        <br />
+        <br />
+
+        <div style="height: 80px">
+           first : &nbsp
+            <div style="height: 80px; display: inline-block;">
+                <units-slider
+                        value="value1"
+                        min-value="minValue"
+                        max-value="maxValue"
+                        on-value-change="valueChangeHandler(value)"
+                </units-slider>
+            </div>
+            <div style="width: 50px; display: inline-block">test11</div>
+        </div>
+
+        <div style="height: 40px">
+            first : &nbsp
+            <div style="height: 40px; display: inline-block;">
+                <units-slider
+                        value="value2"
+                        min-value="minValue"
+                        max-value="maxValue"
+                        on-value-change="valueChangeHandler(value)"
+                </units-slider>
+            </div>
+            <div style="width: 50px; display: inline-block">test11</div>
+        </div>
+
+        <div style="height: 20px">
+            first : &nbsp
+            <div style="height: 20px; display: inline-block;">
+                <units-slider
+                        value="value3"
+                        min-value="minValue"
+                        max-value="maxValue"
+                        on-value-change="valueChangeHandler(value)"
+                </units-slider>
+            </div>
+            <div style="width: 20px; display: inline-block">test11</div>
+        </div>
+
+
+        <div>
+            first : &nbsp
+            <div style="display: inline-block;">
+                <units-slider
+                        value="value4"
+                        min-value="minValue"
+                        max-value="maxValue"
+                        on-value-change="valueChangeHandler(value)"
+                </units-slider>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="node_modules/d3/d3.min.js"></script>
+    <script src="main.js"></script>
+    <script src="unitsSlider.js"></script>
+
+</body>
+</html>
