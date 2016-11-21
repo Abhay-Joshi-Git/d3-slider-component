@@ -12,14 +12,31 @@
         <br />
         <br />
 
-        <div style="height: 80px">
+        <input ng-model="secondValueWidth">
+
+        <br />
+        <br />
+        {{value1}}
+        {{value2}}
+        <br />
+        <br />
+
+        <br />
+        <br />
+            <button ng-click="changeVerticalLinesColor()" > change line color </button>
+        <br />
+        <br />
+
+        <div style="height: 40px">
            first : &nbsp
-            <div style="height: 80px; display: inline-block;">
+            <div style="height: 40px; width: 300px; display: inline-block;">
                 <units-slider
                         value="value1"
-                        min-value="minValue"
+                        min-value="minValue1"
                         max-value="maxValue"
                         on-value-change="valueChangeHandler(value)"
+                        max-pixel-units-ratio="10"
+                        >
                 </units-slider>
             </div>
             <div style="width: 50px; display: inline-block">test11</div>
@@ -27,42 +44,46 @@
 
         <div style="height: 40px">
             first : &nbsp
-            <div style="height: 40px; display: inline-block;">
+            <div style="height: 40px; width: 300px; display: inline-block;">
                 <units-slider
                         value="value2"
-                        min-value="minValue"
+                        min-value="minValue2"
                         max-value="maxValue"
                         on-value-change="valueChangeHandler(value)"
+                        container-style-options="containerStyleOptions"
+                        vertical-line-options="verticalLinesOption"
+                        max-pixel-units-ratio="10"
+                >
                 </units-slider>
             </div>
             <div style="width: 50px; display: inline-block">test11</div>
         </div>
 
-        <div style="height: 20px">
-            first : &nbsp
-            <div style="height: 20px; display: inline-block;">
-                <units-slider
-                        value="value3"
-                        min-value="minValue"
-                        max-value="maxValue"
-                        on-value-change="valueChangeHandler(value)"
-                </units-slider>
-            </div>
-            <div style="width: 20px; display: inline-block">test11</div>
-        </div>
+        <!--<div style="height: 20px">-->
+            <!--first : &nbsp-->
+            <!--<div style="height: 20px; display: inline-block;">-->
+                <!--<units-slider-->
+                        <!--value="value3"-->
+                        <!--min-value="minValue"-->
+                        <!--max-value="maxValue"-->
+                        <!--on-value-change="valueChangeHandler(value)"-->
+                <!--</units-slider>-->
+            <!--</div>-->
+            <!--<div style="width: 20px; display: inline-block">test11</div>-->
+        <!--</div>-->
 
 
-        <div>
-            first : &nbsp
-            <div style="display: inline-block;">
-                <units-slider
-                        value="value4"
-                        min-value="minValue"
-                        max-value="maxValue"
-                        on-value-change="valueChangeHandler(value)"
-                </units-slider>
-            </div>
-        </div>
+        <!--<div>-->
+            <!--first : &nbsp-->
+            <!--<div style="display: inline-block;">-->
+                <!--<units-slider-->
+                        <!--value="value4"-->
+                        <!--min-value="minValue"-->
+                        <!--max-value="maxValue"-->
+                        <!--on-value-change="valueChangeHandler(value)"-->
+                <!--</units-slider>-->
+            <!--</div>-->
+        <!--</div>-->
 
 
 
