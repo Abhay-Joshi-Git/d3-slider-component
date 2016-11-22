@@ -99,9 +99,6 @@ angular.module('app')
         }
       }
 
-      //TODO - add group for all things which appear and disappear based on drag or no-drag
-      //TODO - put a max height for rect and everything actually
-
       function Slider(config) {
         var svg, rect, rect_top,
           drag, dragPin,
@@ -110,14 +107,16 @@ angular.module('app')
           actualPixelUnitsRatio, pixelUnitsRatio, unitsRange,
           value, minValue, maxValue,
           paddingUnits, maxPixelUnitsRatio, totalWidth, totalHeight,
-          minMaxRectVisibleOpacity, minMaxRectDefaultOpacity, rectHeightPercentage,
+          minMaxRectVisibleOpacity, minMaxRectDefaultOpacity, minMaxBracketVisibleOpacity,
+          rectHeightPercentage,
           rectColor, minMaxRectColor,
           sliderImageHeight, sliderImageWidth, sliderImageRectPercentage, sliderImagePath,
           verticalLinesColor, verticalLinesSeparation,
-          container;
+          container, dragVisibleGroup;
 
         function serRectProps(config) {
           minMaxRectVisibleOpacity = 0.5;
+          minMaxBracketVisibleOpacity = 0.4;
           minMaxRectDefaultOpacity = 0;
           rectHeightPercentage = '60';
           rectColor = 'pink';
@@ -191,6 +190,7 @@ angular.module('app')
           rect_top = parseInt(svg.style('height'), 10) * rect_top_svg_height_ratio;
         }
 
+        //initializing props
         setProps(config);
 
         function calValues(values) {
@@ -212,12 +212,20 @@ angular.module('app')
         function doDraw() {
           appendVerticalLines();
           rect = appendRect();
+          dragVisibleGroup = appendDragVisibleGroup();
           minRect = appendMinRect();
           maxRect = appendMaxRect();
           dragPin = appendSliderPin();
           minBracket = appendMinBracket();
           maxBracket = appendMaxBracket();
           dragPin.call(drag);
+        }
+
+        function appendDragVisibleGroup() {
+          svg.select('.drag-visible-group').remove();
+          return svg.append('g')
+            .attr('class', 'drag-visible-group')
+            .style('opacity', minMaxRectDefaultOpacity);
         }
 
         function update(values) {
@@ -278,59 +286,58 @@ angular.module('app')
         }
 
         function appendMinRect() {
-          svg.select('.min-rect').remove();
-          return svg.append('rect')
+          dragVisibleGroup.select('.min-rect').remove();
+          return dragVisibleGroup.append('rect')
             .attr('class', 'min-rect')
             .attr("x", 0)
             .attr("y", rect_top)
             .attr("height", rectHeightPercentage + '%')
             .attr("width", (paddingUnits / 2) * pixelUnitsRatio)
             .style('fill', minMaxRectColor)
-            .style('opacity', minMaxRectDefaultOpacity)
+            .style('opacity', minMaxRectVisibleOpacity)
         }
 
         function appendMaxRect() {
-          svg.select('.max-rect').remove();
-          return svg.append('rect')
+          dragVisibleGroup.select('.max-rect').remove();
+          return dragVisibleGroup.append('rect')
             .attr('class', 'max-rect')
             .attr("x",  getMaxRectWidth())
             .attr("y", rect_top)
             .attr("height", rectHeightPercentage + '%')
             .attr("width", '100%')
             .style('fill', minMaxRectColor)
-            .style('opacity', minMaxRectDefaultOpacity)
+            .style('opacity', minMaxRectVisibleOpacity)
         }
 
         function appendMinBracket() {
-          svg.select('.min-bracket-text').remove();
-          return svg.append('text')
+          dragVisibleGroup.select('.min-bracket-text').remove();
+          return dragVisibleGroup.append('text')
             .attr('class', 'min-bracket-text')
             .attr("x", (paddingUnits / 2) * pixelUnitsRatio)
             .attr("y", parseInt(svg.style('height'), 10) / 2)
             .text("[")
             .attr("text-anchor", "middle")
             .attr("dominant-baseline", "middle")
-            .style('opacity', minMaxRectDefaultOpacity)
+            .style('opacity', minMaxBracketVisibleOpacity)
             .style('font-size', parseInt(svg.style('height'), 10) * 0.85)
         }
 
         function appendMaxBracket() {
-          svg.select('.max-bracket-text').remove();
-          return svg.append('text')
+          dragVisibleGroup.select('.max-bracket-text').remove();
+          return dragVisibleGroup.append('text')
             .attr('class', 'max-bracket-text')
             .attr("x", getMaxRectWidth())
             .attr("y", parseInt(svg.style('height'), 10) / 2)
             .text("]")
             .attr("text-anchor", "middle")
             .attr("dominant-baseline", "middle")
-            .style('opacity', minMaxRectDefaultOpacity)
+            .style('opacity', minMaxBracketVisibleOpacity)
             .style('font-size', parseInt(svg.style('height'), 10) * 0.85)
         }
 
         function dragHandler () {
           var slider_image_inside_rect = (sliderImageWidth * sliderImageRectPercentage / 100);
-          var newX = +dragPin.attr('x') + d3.event.dx;
-          newX = Number(newX.toFixed(2));
+          var newX = d3.event.x;
 
           if ((newX > (getMaxRectWidth() - slider_image_inside_rect) ) ||
             newX < ((paddingUnits / 2) * pixelUnitsRatio - slider_image_inside_rect)) {
@@ -340,11 +347,8 @@ angular.module('app')
           dragPin.attr('x', newX);
           rect.attr('width', newX + slider_image_inside_rect);
 
-          var newValue = getCurrentValue();
-          newValue = Math.round(newValue); //Number(newValue.toFixed(2));
-
           if (typeof config.slideHandler === 'function') {
-            config.slideHandler(newValue);
+            config.slideHandler(Math.round(getCurrentValue()));
           }
         }
 
@@ -361,17 +365,11 @@ angular.module('app')
         }
 
         function showMinMaxRect() {
-          minRect.style('opacity', minMaxRectVisibleOpacity);
-          maxRect.style('opacity', minMaxRectVisibleOpacity);
-          minBracket.style('opacity', 0.4);
-          maxBracket.style('opacity', 0.4);
+          dragVisibleGroup.style('opacity', 1);
         }
 
         function hideMinMaxRect() {
-          minRect.style('opacity', minMaxRectDefaultOpacity);
-          maxRect.style('opacity', minMaxRectDefaultOpacity);
-          minBracket.style('opacity', minMaxRectDefaultOpacity);
-          maxBracket.style('opacity', minMaxRectDefaultOpacity);
+          dragVisibleGroup.style('opacity', minMaxRectDefaultOpacity);
         }
 
         function appendVerticalLines() {
@@ -395,7 +393,14 @@ angular.module('app')
         }
 
         drag = d3.behavior.drag()
-          .origin(Object)
+          .origin(function() {
+            var t = d3.select(this);
+            return {
+              x: t.attr('x'),
+              y: t.attr('y')
+            };
+          })
+          //.origin(Object)
           .on('drag', dragHandler)
           .on('dragstart', dragStartHandler)
           .on('dragend', dragEndHandler);
